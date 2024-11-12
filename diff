@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# ./diff quadsort 20 random
+# ./diff piposort 20 random
+
+run() {
+    ./zig-out/bin/zig-scandum "$1-$2" ${@:3} 2> out.$2
+}
+
+zig build -Dtrace=true
+run $1 c ${@:2}
+run $1 zig ${@:2}
+git diff --word-diff=color --no-index --histogram --no-prefix --function-context out.c out.zig
+rm out.c out.zig
